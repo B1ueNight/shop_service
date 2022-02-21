@@ -1,0 +1,108 @@
+package com.bluenight.shopping_service.controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
+import com.bluenight.shopping_service.data.CartInfoVO;
+import com.bluenight.shopping_service.data.MemberVO;
+import com.bluenight.shopping_service.mapper.MemberMapper;
+import com.bluenight.shopping_service.mapper.ProductMapper;
+import com.bluenight.shopping_service.util.AESAlgorithm;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/member")
+public class MemberController {
+    @Autowired ProductMapper prod_mapper;
+    @Autowired MemberMapper mapper;
+    @GetMapping("/login")
+    public String getMemberLogin(HttpSession session) {
+        Boolean try_login = (Boolean)session.getAttribute("try_login");
+        if(try_login == null || try_login == false){
+            session.setAttribute("login_status", null);
+            session.setAttribute("login_msg", null);
+        }
+        session.setAttribute("try_login", false);
+        return "/member/login";
+    }
+
+    @PostMapping("/login")
+    public String postMemberLogin(HttpSession session, String user_email, String user_pwd, String prev_url) throws Exception {
+        System.out.println(prev_url);
+        session.setAttribute("try_login", true);
+        MemberVO login_user = mapper.loginMember(user_email,AESAlgorithm.Encrypt(user_pwd));
+        if(login_user == null) {
+            session.setAttribute("login_user", null);
+            session.setAttribute("login_status", "incorrect");
+            session.setAttribute("login_msg", "아이디 혹은 비밀번호 오류 입니다.");
+            return "redirect:/member/login";
+        }
+            if(login_user.getMi_status() != 1){
+                session.setAttribute("login_user", null);
+            }
+            if(login_user.getMi_status() == 2){
+                session.setAttribute("login_status", "pause");
+                session.setAttribute("login_msg", "사용 정지 상태의 계정입니다.");
+                return "redirect:/member/login";
+            }
+            if(login_user.getMi_status() == 3){
+                session.setAttribute("login_status", "wating");
+                session.setAttribute("login_msg", "가입 대기중인 계정입니다.");
+                return "redirect:/member/login";
+            }
+            if(login_user.getMi_status() == 4){
+                session.setAttribute("login_status", "leaving");
+                session.setAttribute("login_msg", "탈퇴 대기 계정입니다.");
+                return "redirect:/member/login";
+            }
+            if(login_user.getMi_status() == 5){
+                session.setAttribute("login_status", "banned");
+                session.setAttribute("login_msg", "영구 정지된 사용자 입니다.");
+                return "redirect:/member/login";
+            }
+            session.setAttribute("login_status", "success");
+            session.setAttribute("login_msg", null);
+            session.setAttribute("login_user", login_user);
+
+            return "redirect:"+prev_url;
+        }
+
+    @GetMapping("/join")
+    public String getMemberJoin() {
+        return "/member/join";
+    }
+
+    @GetMapping("/logout")
+    public String getMemberLogout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
+    }
+
+    @GetMapping("/cart")
+    public String getMemberCart(Model model, HttpSession session) {
+        MemberVO login_user = (MemberVO)session.getAttribute("login_user");
+        if(login_user == null) return "redirect:/member/login";
+
+
+        List<CartInfoVO> list = prod_mapper.selectCartInfo(login_user.getMi_seq());
+        Double total_price = 0.0;
+        Double total_d_price = 0.0;
+
+        for(CartInfoVO item : list) {
+            total_price += item.getDiscounted_price() * item.getScd_count();
+            total_d_price += item.getDi_price();
+        }
+
+        model.addAttribute("list", list);
+        model.addAttribute("total_price", total_price);
+        model.addAttribute("total_d_price", total_d_price);
+        return "/member/cart";
+    }
+}
