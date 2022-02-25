@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="/assets/css/checkout.css">
     <script src="/assets/js/order/checkout.js"></script>
 </head>
 <body>
@@ -67,7 +68,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        ${order_items}
                         <c:forEach items="${order_items}" var="item">
                             <tr data-pi-seq = "${item.pi_seq}" data-price="${item.discounted_price}" data-count="${item.scd_count}"
                             data-di-price="${item.di_price}">
@@ -104,7 +104,7 @@
                         <tr>
                             <td class="td_title">결제방법</td>
                             <td class="payment_type">
-                                <input type="radio" name="pay" id="account" value="account">
+                                <input type="radio" name="pay" id="account" value="account" checked>
                                 <label for="account">계좌이체</label>
                                 <input type="radio" name="pay" id="card" value="card">
                                 <label for="card">신용카드</label>

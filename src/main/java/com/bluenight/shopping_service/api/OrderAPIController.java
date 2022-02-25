@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/order")
-public class OrderAPIContorller {
+public class OrderAPIController {
     @Autowired OrderMapper order_mapper;
     @Autowired ProductMapper prod_mapper;
     @PutMapping("/add")
@@ -29,7 +29,7 @@ public class OrderAPIContorller {
         // order_mapper.insertOrderInfo(itemList);
         int total_price = 0;
         int total_d_price = 0;
-        for(OrderInfoVO item : itemList){
+        for(OrderInfoVO item : itemList){ 
             total_price += item.getOi_price() * item.getOi_count();
             total_d_price += item.getDelivery_price();
         }
@@ -43,6 +43,8 @@ public class OrderAPIContorller {
             resultMap.put("message", "정상적인 요청이 아닙니다.");
             return new ResponseEntity<Object>(resultMap, HttpStatus.FORBIDDEN);
         }
+
+        order_mapper.insertOrderInfo(itemList);
 
         for(OrderInfoVO item : itemList) {
             ShoppingCartVO cart_item = new ShoppingCartVO();

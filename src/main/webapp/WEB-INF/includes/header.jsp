@@ -25,9 +25,13 @@
             }
         }
         //현재 접속한 페이지가 로그인이 아닐 경우
-        if(url_array[url_array.length - 1] != "login")
+        if(url_array[url_array.length - 1] != "login" && url_array[url_array.length -1] != "join")
         // 세션에 이전 페이지 url 정보를 기록
             sessionStorage.setItem("prev_url", url);
+
+        let search_type = '${type}';
+        let conn_page_time = (new Date()).getTime();
+        let mi_seq = "${login_user.mi_seq}";
     </script>
     <script src="/assets/js/header.js"></script>
 </head>
@@ -74,11 +78,11 @@
                             <option value="seller">판매자</option>
                             <option value="manufacturer">제조사</option>
                         </select>
-                        <input type="text" id="keyword">
+                        <input type="text" id="keyword" value="${keyword}">
                         <button id="search_btn">검색</button>
                     </div>
                     <div class="myservice">
-                        <a href="#">
+                        <a href="/member/order_list">
                             <i class="fas fa-list"></i>
                             <span>주문목록</span>
                         </a>

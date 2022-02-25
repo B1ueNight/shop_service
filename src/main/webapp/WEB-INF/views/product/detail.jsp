@@ -15,6 +15,11 @@
         let product_stock = "${item.pi_stock}";
         let product_point = "${item.saving_point}";
         let prod_seq = "${item.pi_seq}"
+
+        let item_seq = "${item_seq}";
+        let conn_time = "${conn_time}";
+        
+        console.log(item_seq, conn_time, mi_seq);
     </script>
     <script src="/assets/js/detail.js"></script>
 </head>
@@ -39,6 +44,13 @@
                         <div class="seller_info">
                             <div class="seller_img" style="background-image:url(http://localhost:8756/image/seller/${item.si_img_url})"></div>
                             <p>${item.si_name}</p>
+                        </div>
+                        <div class="item_score">
+                            <div class="score_box">
+                                <div class="score_box_bar" style="width:${score.avg / 5 * 100}%"></div>
+                                <img src="/assets/images/star_bg.png">
+                            </div>
+                            <p> 총 상품 리뷰 <b>${score.cnt}</b>개</p>
                         </div>
                         <h2 class="item_name">[${item.mfi_name}] ${item.pi_name}</h2>
                         <c:if test="${item.pi_sub_title != ''}">
@@ -133,7 +145,25 @@
             </div>
         </section>
         <section class="item_review_area">
+            <h1>회원 리뷰</h1>
+            <table id="review_table">
+                <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th>내용</th>
+                        <th>별점</th>
+                        <th>작성자</th>
+                        <th>등록일</th>
+                        <th>수정일</th>
+                    </tr>
+                </thead>
+                <tbody>
 
+                </tbody>
+            </table>
+            <div class="review_pager_area">
+                
+            </div>
         </section>
         <section class="item_qna_area">
 

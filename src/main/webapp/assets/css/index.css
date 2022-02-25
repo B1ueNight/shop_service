@@ -43,3 +43,10 @@ background-size: 90%; background-position: center; margin-bottom: 20px; box-shad
     width: 1100px; margin: 0 auto; font-size: 36px; color: #333; margin-bottom: 50px; margin-top: 40px;
     text-align: center;
 }
+
+.pager_area { padding: 30px 0; text-align: center;}
+.pager_area a {color: #666; text-decoration: none; margin: 5px;}
+.pager_area a.current { font-weight: 700; color: #000;}
+
+.list_contents .empty h1 {font-size: 28px; text-align: center; color: #999;}
+.list_contents .empty {padding: 100px 0;}

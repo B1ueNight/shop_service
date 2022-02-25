@@ -4,16 +4,31 @@
 <mapper namespace="com.bluenight.shopping_service.mapper.OrderMapper">
     <insert id="insertOrderInfo">
         INSERT INTO order_info
-            (
-                oi_pi_seq, oi_mi_seq, oi_price, oi_count, oi_shipping_name, oi_shipping_address, 
-                oi_shiipping_phone, oi_shipping_request, oi_pay_type
+        (
+            oi_pi_seq, oi_mi_seq, oi_price, oi_count, oi_shipping_name, oi_shipping_address,
+            oi_shiipping_phone, oi_shipping_request, oi_pay_type
             )
         VALUES
         <foreach collection="dataList" item="item" separator=",">
             (
-                #{item.oi_pi_seq}, #{item.oi_mi_seq}, #{item.oi_price}, #{item.oi_count}, #{item.oi_shipping_name}, 
-                #{item.oi_shipping_address}, #{item.oi_shiipping_phone}, #{item.oi_shipping_request}, #{item.oi_pay_type}
-            )          
+                #{item.oi_pi_seq}, #{item.oi_mi_seq}, #{item.oi_price}, #{item.oi_count}, 
+                #{item.oi_shipping_name}, #{item.oi_shipping_address}, #{item.oi_shiipping_phone}, 
+                #{item.oi_shipping_request}, #{item.oi_pay_type}
+                )
         </foreach>
     </insert>
+    <select id="selectOrderSummary" resultType="com.bluenight.shopping_service.data.OrderSummaryVO">
+        select a.*, b.*, c.ri_seq is null as r_able from order_summary_list a inner join (
+            select pii_pi_seq, pii_img_url as img 
+            from product_image_info where pii_thumb = true)
+        b on a.pi_seq = b.pii_pi_seq
+        left outer join review_info c
+        on a.oi_seq = c.ri_oi_seq
+            where oi_mi_seq = #{seq}
+            order by oi_seq desc
+            limit 10 offset #{offset}
+    </select>
+    <select id="selectOrderSummaryCount" resultType="java.lang.Integer">
+        select count(*) from order_summary_list where oi_mi_seq = #{seq}
+    </select>
 </mapper>

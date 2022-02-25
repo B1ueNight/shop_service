@@ -7,21 +7,25 @@ import javax.servlet.http.HttpSession;
 import com.bluenight.shopping_service.data.CartInfoVO;
 import com.bluenight.shopping_service.data.MemberVO;
 import com.bluenight.shopping_service.mapper.MemberMapper;
+import com.bluenight.shopping_service.mapper.OrderMapper;
 import com.bluenight.shopping_service.mapper.ProductMapper;
 import com.bluenight.shopping_service.util.AESAlgorithm;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/member")
 public class MemberController {
     @Autowired ProductMapper prod_mapper;
     @Autowired MemberMapper mapper;
+    @Autowired OrderMapper order_mapper;
     @GetMapping("/login")
     public String getMemberLogin(HttpSession session) {
         Boolean try_login = (Boolean)session.getAttribute("try_login");
@@ -35,7 +39,7 @@ public class MemberController {
 
     @PostMapping("/login")
     public String postMemberLogin(HttpSession session, String user_email, String user_pwd, String prev_url) throws Exception {
-        System.out.println(prev_url);
+        // System.out.println(prev_url);
         session.setAttribute("try_login", true);
         MemberVO login_user = mapper.loginMember(user_email,AESAlgorithm.Encrypt(user_pwd));
         if(login_user == null) {
@@ -104,5 +108,42 @@ public class MemberController {
         model.addAttribute("total_price", total_price);
         model.addAttribute("total_d_price", total_d_price);
         return "/member/cart";
+    }
+
+    
+    @GetMapping("/order_list")
+    public String getMemberOrderList(Model model, @RequestParam @Nullable Integer offset, HttpSession session) {
+        MemberVO login_user = (MemberVO)session.getAttribute("login_user");
+        if(login_user == null) return "redirect:/member/login";
+
+        if(offset == null) offset = 0;
+        Integer cnt = order_mapper.selectOrderSummaryCount(login_user.getMi_seq());
+        Integer page = (cnt/10) + (cnt%10 > 0 ? 1:0);
+
+        model.addAttribute("list", order_mapper.selectOrderSummary(login_user.getMi_seq(), offset));
+        model.addAttribute("page", page);
+        model.addAttribute("offset", offset);
+        return "/member/order_list";
+    }
+
+    @GetMapping("/review")
+    public String getMemberReview(
+        @RequestParam Integer product, 
+        @RequestParam Integer order, 
+        HttpSession session, Model model
+    ) {
+        MemberVO login_user = (MemberVO)session.getAttribute("login_user");
+        if(login_user == null) return "redirect:/member/login";
+        if(mapper.isExistReview(login_user.getMi_seq(), product, order) == 1) {
+            return "redirect:/member/order_list";
+        } 
+
+
+        model.addAttribute("product", product);
+        model.addAttribute("order", order);
+        model.addAttribute("prod", prod_mapper.selectProductBySeq(product));
+
+        return "/member/review";
+
     }
 }
