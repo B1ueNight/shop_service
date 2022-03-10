@@ -30,19 +30,19 @@
                 <div class="item_img_area">
                     <c:forEach items="${item_img}" var="img">
                         <c:if test="${img.pii_thumb}">
-                            <div class="item_img_big" style="background-image:url(http://localhost:8756/image/product/${img.pii_img_url})"></div>
+                            <div class="item_img_big" style="background-image:url(http://server02.hadoop.com:8756/image/product/${img.pii_img_url})"></div>
                         </c:if>
                     </c:forEach>
                     <div class="item_img_list">
                         <c:forEach items="${item_img}" var="img">
-                            <div class="item_img_small" style="background-image:url(http://localhost:8756/image/product/${img.pii_img_url})"></div>
+                            <div class="item_img_small" style="background-image:url(http://server02.hadoop.com:8756/image/product/${img.pii_img_url})"></div>
                         </c:forEach>
                     </div>
                 </div>
                 <div class="item_info_area">
                     <div class="basic_info">
                         <div class="seller_info">
-                            <div class="seller_img" style="background-image:url(http://localhost:8756/image/seller/${item.si_img_url})"></div>
+                            <div class="seller_img" style="background-image:url(http://server02.hadoop.com:8756/image/seller/${item.si_img_url})"></div>
                             <p>${item.si_name}</p>
                         </div>
                         <div class="item_score">
@@ -140,7 +140,7 @@
                     <p>${desc.pdd_content}</p>
                 </c:forEach>
                 <c:forEach items="${item_desc_img}" var="desc_img">
-                    <img src="http://localhost:8756/image/product/${desc_img.pddi_img_url}">
+                    <img src="http://server02.hadoop.com:8756/image/product/${desc_img.pddi_img_url}">
                 </c:forEach>
             </div>
         </section>

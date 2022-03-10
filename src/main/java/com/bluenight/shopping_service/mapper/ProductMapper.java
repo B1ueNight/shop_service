@@ -18,6 +18,7 @@ public interface ProductMapper {
     List<ProductVO> selectProductAll();
     List<ProductVO> selectRecommendList();
     List<ProductVO> selectProductByCateSeq(Integer seq);
+    List<ProductVO> selectRecommendProdutBymember(Integer seq);
     List<Integer> selectProductCategories();
 
     List<ProductVO> selectProductByCateSeqList(List<Integer> seq_list, Integer offset);

@@ -64,12 +64,50 @@
                 </div>
             </div>
         </section>
+        <c:if test="${recommend_list_by_member != null}">
+            <c:if test="${recommend_list_by_member.size() != 0}">
+                <section class="s0 item_list">
+                    <h1>이 상품 어때요?</h1>
+                    <div class="list_contents">
+                        <c:forEach items="${recommend_list_by_member}" var="item">
+                            <div class="list_item">
+                                <div class="thumb" style="background-image:url(http://server02.hadoop.com:8756/image/product/${item.thumbnail})">
+                            </div>
+                                <a class="prod_name" href="/product/detail?index=${item.pi_seq}">
+                                    <span class="item_brand">[${item.mfi_name}]</span>
+                                    <span class="item_name">${item.pi_name}</span>
+                                </a>
+                                <div class="price_wrap">
+                                    <c:if test="${item.pi_discount_rate != 0}">
+                                        <div class="discount_rate_area">
+                                            <p class="discount_rate">
+                                                <fmt:formatNumber value="${item.pi_discount_rate}" pattern="###,###,###"/>%
+                                        </p>
+                                    </div>
+                                </c:if>
+                                <div class="prive_area">
+                                    <p class="price">
+                                        <fmt:formatNumber value="${item.discounted_price}" pattern="###,###,###"/>원
+                                </p>
+                                    <c:if test="${item.pi_discount_rate != 0}">
+                                        <p class="origin_price">
+                                            <fmt:formatNumber value="${item.pi_price}" pattern="###,###,###"/>원
+                                    </p>
+                                </c:if>
+                            </div>
+                        </div>
+                    </div>
+                    </c:forEach>
+                </div>
+                </section>
+            </c:if>
+        </c:if>
         <section class="s1 item_list">
             <h1>추천 제품</h1>
             <div class="list_contents">
                 <c:forEach items="${recommend_list}" var="item">
                     <div class="list_item">
-                        <div class="thumb" style="background-image:url(http://localhost:8756/image/product/${item.thumbnail})">
+                        <div class="thumb" style="background-image:url(http://server02.hadoop.com:8756/image/product/${item.thumbnail})">
                     </div>
                         <a class="prod_name" href="/product/detail?index=${item.pi_seq}">
                             <span class="item_brand">[${item.mfi_name}]</span>
@@ -104,7 +142,7 @@
                 <div class="list_contents">
                     <c:forEach items="${map.list}" var="item">
                         <div class="list_item">
-                            <div class="thumb" style="background-image:url(http://localhost:8756/image/product/${item.thumbnail})">
+                            <div class="thumb" style="background-image:url(http://server02.hadoop.com:8756/image/product/${item.thumbnail})">
                         </div>
                             <a class="prod_name" href="/product/detail?index=${item.pi_seq}">
                                 <span class="item_brand">[${item.mfi_name}]</span>
@@ -135,6 +173,7 @@
             </div>
         </div>
             </section>
+
         </c:forEach>
     </main>
     <%@include file="/WEB-INF/includes/footer.jsp"%>
